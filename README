@@ -1,0 +1,192 @@
+La práctica 5, consite en el desarrollo de un chat mediante el uso de sockets
+de internet TCP, por lo que en este caso seremos capaces de comunicarnos mediante
+una conexión fiable entre el cliente y el servidor, siendo en este caso el cliente
+un cliente múltiple que deberá recibir la información correspondiente a los mensajes
+que han enviado el resto de clientes.
+
+MANUAL DE USO
+
+    CLIENTE
+
+        El cliente es un programa que tras ejecutarlo, nos permite escribir
+        mensajes y al cliente, los cuales, dependiendo de la sintaxis utilizada
+        se comportarán en el mismo de una u otra manera, por ejemplo, si escibimos
+        un mensaje cualquiera, se enviará el mensaje como un mensaje de texto
+        normal, es decir que deseamos que se envíe al resto de usuarios del chat,
+        por contra si se escribe uno de los comandos en ejecución se ejecutará
+        la acción correspondiente y descrita en las siguientes lineas.
+
+        Al mismo tiempo, mientras el proceso nos permite enviarle mensajes al
+        servidor, éste está leyendo constantemente los datos que le llegan desde
+        el servidor.
+
+        Para ejecutar el cliente basta con ejecutar en consola:
+
+            ./cli5
+
+        Si por el contrario deseamos ejecutar el cliente con una interfaz
+        gráfica, basta con ejecutar, para ejecutarlo hace falta la máquina
+        virtual java.
+
+            ./interfaz
+
+        Cuando un usuario se conecte, se le mostrarán los nombres de las diferentes
+        salas a las que puede acceder con cadenas de la siguiente manera
+
+            -- %s --
+
+        Siendo %s, el nombre de la sala, una vez que sepamos a que sala deseamos
+        conectarnos, tendremos que escribir el nombre de la sala tal cual aparece,
+        es decir el equivalente a %s
+
+        FLAGS
+
+            -p indica el puerto por el que nos conectaremos con el servidor
+
+                   ./cli5 -p 12345
+
+            -d indica la dirección por la que nos conectaremos con el servidor
+
+                   ./cli5 -d localhost
+
+	    -cert indica la ruta del certificado a utilizar para conectarse con 
+		el servidor
+		   ./cli5 -cert /usr/share/doc/libssl-dev/demos/sign/cert.pem
+
+        COMANDOS EN EJECUCIÓN
+
+            -x comando aplicable en cualquier momento, es el único comando aplicable
+            en el proceso de autenticación.
+
+                -x # cierra el cliente
+
+            --serv lo que se esciba en el siguiente comando, se le envia directamente
+            al servidor
+
+                --serv # nos indica que ahora estamos hablando con el servidor
+                -x # le enviamos el comando -x al servidor
+
+            Para salir del modo de conversación con el servidor (modo durante
+            el cual no se recibirán los mensajes enviados por el chat) habremos
+            de escribir 'exit', y volveremos al modo de chat tradicional.
+
+    SERVIDOR
+
+        El servidor es un programa que es capaz de interactuar n clientes, de
+        manera que estos se conectan a él y este retransmite la información.
+
+        Su uso es muy sencillo, ya que una vez ejecutado, podemos olvidarnos de
+        él, de hecho en el caso de que deseemos ejecutar un comando en ejecución,
+        hemos de, cargar un cliente y mediante el previo uso del comando
+        --serv, enviarle uno de los comandos permitidos durante la ejecución
+        y cuyo comportamiento se detalla a continuación.
+
+        En el caso de que al ejecutar el servidor, no se encuentre el fichero con
+        la base de datos, se creará uno y se solicitarán las credenciales del
+        administrador en el servidor, tras esto, todo se hará desde el cliente.
+
+        Al conectarse con el servidor, y escoger un nombre, si este no está en la
+        base de datos, el usuario se conectará como invitado, pudiendo sólo
+        enviar mensajes, si por el contrario el usuario está registrado, se le
+        solicitará la contraseña y tendrá el rol asignado en la base de datos
+
+        Si al ejecutar el cliente nos dice que la base de datos no existe, el
+        proceso terminará con un error (-1), por lo que deberemos crear dicha
+        base de datos ejecutando './createdb nombre de la base de datos'.
+
+        ROLES
+            GUEST - invitado, sólo puede enviar mensajes y a su nombre se le
+                    concaternará la cadena de texto '-guest'
+
+            USER - usuario, sólo puede enviar mensajes
+
+            ADMIN - administrador, además de enviar mensajes, es capaz de enviarle
+                    comandos al servidor
+
+        FLAGS
+
+            -p indica el puerto por la que habrán de conectarse los clientes
+
+                    ./serv5 -p 12345
+
+            -ls indica el tamaño inicial de la lista de clientes
+
+                    ./serv5 -ls 100
+
+            -lg indica el factor de crecimiento de la cola
+
+                    ./serv5 -lg 10
+
+            -db indica el nombre de la base de datos con la que se va a interactuar
+
+                    ./serv5 -db chat.db
+
+	    -cert indica la ruta del certificado a utilizar para conectarse con 
+		el servidor
+		   ./serv5 -cert cert
+
+	    -pkey indica la ruta de la clave privada de la que hará uso el servidor
+
+		   ./serv5 -pkey pkey
+
+        COMANDOS EN EJECUCIÓN estos comandos vienen desde el cliente, sólo será
+            capaz de comunicarse con el servidor aquellos usuarios que tengan el
+            rango de administrador.
+
+            -x cierra el servidor
+
+            --add-user name password [rol]
+                Este comando, creará un usuario con nombre 'name', contraseña
+                'password' y el rol indicado, por ahora se admiten los roles de
+                'admin' y 'user', en caso de no especificar el campo rol, el
+                usuario creado le srá asignado el rol 'user'. No se podrán
+                crear dos usuarios con el mismo nombre.
+
+            --delete-user name
+                Este comando borra el usuario cuyo nombre coincida con el valor
+                'name'
+
+            --list-user
+                Este comando lista todos los usuarios registrados en el chat
+
+            --log
+                Este comando imprime todas las ocurrencias del log si no se le
+                pasan parámetros
+
+                Se le pueden pasar dos parámetros, fecha de inicio y fecha de fin
+
+                    --log dd/mm/YYYY dd/mm/YYYY
+
+                en cuyo caso se listarán sólo los log entre dos fechas
+
+            --mp [nombre]
+                Este comando le envía un mensaje privado al usuario llamado nombre,
+                el mensaje se escribirá después de haber pulsado intro después
+                de esta cadena.
+
+                --mp admin
+                    mensaje para el administrador
+
+                Le envia un mensaje privado al administrador cuyo contenido es
+                'mensaje para el administrador'
+
+            --add-room [nombre]
+                Este comando añade una nueva sala de chat llamada [nombre]
+
+            --list-room
+                Este comando lista todas las salas de chat
+
+            --delete-room [nombre]
+                Este comando borra una sala de chat llamada [nombre] y mueve los
+                usuarios que se encontraban en esta a la sala general
+
+    CREATEDB
+
+        Proceso que crea la base de datos con un usuario administrador.
+
+        Sólo admite un parámetro que es obligatorio y que tiene el nombre de
+        la base de datos a crear, es aconsejable llamar a la base de datos
+        chat.db ya que es el nombre por defecto de la base de datos a la que
+        intenta conectarse el servidor
+
+            ./createDB chat.db

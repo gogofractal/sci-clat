@@ -1,0 +1,20 @@
+
+REQUISITOS
+libssl-dev
+libsqlite3-dev
+
+máquina virtual java para ejecutar la interfaz, hay que dejar claro que no es obligatoria
+para el funcionamiento básico de la práctica
+
+INSTALACION
+Para compilar los fuentes en los que se entrega el código fuente,
+basta con ejecutar desde consola el comando 'make', el cual ejecutará
+por nosotros:
+
+	gcc -lpthread -ldl -lssl -lcrypto -lsqlite3 -Wall -o serv5 serv5.c servFunctions.c database.c type.c tools.c
+	gcc -Wall -o cli5 cli5.c type.c tools.c
+	gcc -lpthread -ldl -lssl -lcrypto -lsqlite3 -Wall -o createDB createDB.c database.c tools.c type.c
+	gcc -Wall -o interfaz interfaz.c type.c
+
+Compilando por nosotros los programas cliente (cli5) y servidor
+(serv5)
