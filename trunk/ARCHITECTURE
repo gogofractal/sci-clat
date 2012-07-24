@@ -1,0 +1,68 @@
+***********
+** CAPAS **
+***********
+En estas primeras entregas, nuestra aplicación consta de 2 capas, una de
+presentación y una lógica, correspodiéndose la capa lógica con el servidor y la
+capa de presentación de la aplicación cliente.
+
+CLIENTE
+
+El cliente, se encarga de, dado un mensaje que lee de teclado, encapsular el
+mensaje y enviárselo al servidor, así como de realizar el proceso inverso, es
+decir, partiendo de un paquete, extraer la información y presentársela al
+usuario mostrando una interfaz relativamente amigable y clara.
+
+El intercambio de mensajes entre cliente y servidor se realiza mediante paquetes
+que aceptan una serie de parámetros que los programas se encargan de encapsular
+y desencapsular.
+
+SERVIDOR
+
+En el servidor, se encuentra la parte lógica de la aplicación, es el lugar desde
+el cual se controlan los usuarios conectados, revisando que en ningún momento
+haya más de un usuario con el mismo nick, que los mensajes que recibe están bien
+formados, así como de hacer un reparto de los mensajes que recibe del cliente
+hacia el resto de clientes.
+
+SQLITE
+
+El servidor interactua con SQLite para obtener datos de un sistema de almacenamiento
+masivo.
+
+********************
+** IMPLEMENTACIÓN **
+********************
+
+Tanto cliente como servidor están implementados en el lenguaje de programación
+C y, disponibles hasta el momento sólo para equipos Unix
+
+CLIENTE
+
+El cliente está compuesto por los archivos cli5.c, y una serie de librerías
+que comparte con el servidor, en este caso, sms.h, trace.h, socket.h y flags.h
+
+SERVIDOR
+
+El servidor, al igual que el cliente, está programado en c y su código está
+repartido por varios ficheros, serv5.c y servFunctions.c, y se apoya en las
+mismas librerias que el programa cliente y, además en el archivo de cabecera
+denominado servFuctions.h, el cual contiene la declaración de las funciones
+contenidas en servFunctions.c
+
+BASE DE DATOS
+
+Hacemos uso de SQLite para almacenar los datos que han de persistir entre sesiones
+
+LIBRERÍAS COMUNES
+
+sms.h - contiene la estructura que se utiliza para la comunicación entre los
+diferentes procesos
+
+socket.h - contiene la estructura con la que identificaremos las diferentes
+conexiones
+
+flags.h - contiene los flags que se utilizarán en nuestros mensajes
+
+trace.h - contiene una macro para imprimir mensajes en el caso de estar aun en
+fase de desarrollo, de manera que si se desean habilitar los mensajes de
+depuración, basta con definir la constante DEBUG con un valor de 1
