@@ -1,0 +1,1 @@
+Basic example of a fully functional char
